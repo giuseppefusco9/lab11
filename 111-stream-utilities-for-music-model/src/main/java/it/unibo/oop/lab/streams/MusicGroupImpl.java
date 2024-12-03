@@ -46,8 +46,9 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Stream<String> albumInYear(final int year) {
-        return this.albums.keySet().stream()
-            .filter(x -> albums.get(x).equals(year));
+        return this.albums.entrySet().stream()
+            .filter(x -> x.getValue().equals(year))
+            .map(Entry::getKey);
     }
 
     @Override
@@ -86,8 +87,8 @@ public final class MusicGroupImpl implements MusicGroup {
             .filter(x -> x.getAlbumName().isPresent())
             .collect(Collectors.groupingBy(Song::getAlbumName, Collectors.summingDouble(Song::getDuration)))
             .entrySet().stream()
-            .max(Comparator.comparingDouble(Entry::getValue))
-            .flatMap(Entry::getKey);
+            .max(Comparator.comparingDouble(Entry::getValue)).get().getKey();
+            //.flatMap(Entry::getKey);
     }
 
     private static final class Song {
