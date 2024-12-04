@@ -64,7 +64,8 @@ public class MultiThreadedMatrixSum implements SumMatrix {
     @Override
     public double sum(double[][] matrix) {
         final int totElemMat = matrix.length*matrix[0].length;
-        final int size = totElemMat % nthread + totElemMat / nthread;
+        final int size1 = totElemMat % nthread + totElemMat / nthread;
+        final int size = matrix.length / nthread + matrix.length % nthread;
         final List<Worker> workers = new ArrayList<>(nthread);
         for (int start = 0; start < matrix.length; start += size) {
             workers.add(new Worker(matrix, start, size));
