@@ -20,7 +20,7 @@ public class MultiThreadedMatrixSum implements SumMatrix {
         private final double[][] matrix;
         private final int startpos;
         private final int nelem;
-        private long res;
+        private double res;
 
         /**
          * Build a new worker.
@@ -44,8 +44,8 @@ public class MultiThreadedMatrixSum implements SumMatrix {
         public void run() {
             System.out.println("Working from position " + startpos + " to position " + (startpos + nelem - 1));
             for (int i = startpos; i < matrix.length && i < startpos + nelem; i++) {
-                for (int j = startpos; j < matrix[i].length && j < startpos + nelem; j++){
-                    this.res += this.matrix[i][j];
+                for (final double elem : this.matrix[i]) {
+                    this.res += elem;
                 }
             }
         }
@@ -55,7 +55,7 @@ public class MultiThreadedMatrixSum implements SumMatrix {
          * 
          * @return the sum of every element in the array
          */
-        public long getResult() {
+        public double getResult() {
             return this.res;
         }
 
@@ -63,8 +63,7 @@ public class MultiThreadedMatrixSum implements SumMatrix {
 
     @Override
     public double sum(double[][] matrix) {
-        final int totElemMat = matrix.length*matrix[0].length;
-        final int size = totElemMat % nthread + totElemMat / nthread;
+        final int size = matrix.length / nthread + matrix.length % nthread;
         final List<Worker> workers = new ArrayList<>(nthread);
         for (int start = 0; start < matrix.length; start += size) {
             workers.add(new Worker(matrix, start, size));
